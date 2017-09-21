@@ -12,7 +12,6 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              '..', '..', '..'))
 import lib.logger.logger as log
-print(dir(log))
 
 _LEVEL = log.LOGGING_LEVEL
 
@@ -29,7 +28,7 @@ class TestLogger(unittest.TestCase):
     def test_name(self):
         """logger name"""
         logger = log.Logger()
-        with self.assertLogs(logger._logger, level=_LEVEL) as context:
+        with self.assertLogs(logger._Logger__logger, level=_LEVEL) as context:
             logger.info('ora !')
             _, name, _ = context.output[0].split(':', 2)
         self.assertRegex(name, '/(.+/)*(.+).py?$')
@@ -38,7 +37,7 @@ class TestLogger(unittest.TestCase):
     def test_name_with_unique_id(self):
         """logger name with unique id"""
         logger = log.Logger(unique_id=123)
-        with self.assertLogs(logger._logger, level=_LEVEL) as context:
+        with self.assertLogs(logger._Logger__logger, level=_LEVEL) as context:
             logger.info('ora !')
             _, name, _ = context.output[0].split(':', 2)
         self.assertRegex(name, '/(.+/)*(.+).py(_[0-9]*)?$')
@@ -47,7 +46,7 @@ class TestLogger(unittest.TestCase):
     def test_critical(self):
         """critical message (with traceback)"""
         logger = log.Logger()
-        with self.assertLogs(logger._logger, level=_LEVEL) as context:
+        with self.assertLogs(logger._Logger__logger, level=_LEVEL) as context:
             try:
                 _ = 1 / 0
             except ZeroDivisionError:
@@ -64,7 +63,7 @@ class TestLogger(unittest.TestCase):
     def test_error(self):
         """error message"""
         logger = log.Logger()
-        with self.assertLogs(logger._logger, level=_LEVEL) as context:
+        with self.assertLogs(logger._Logger__logger, level=_LEVEL) as context:
             logger.error('%s %s %s', 'エラー', '！', '！')
             level, _, message = context.output[0].split(':', 2)
         self.assertEqual(level, 'ERROR')
@@ -74,7 +73,7 @@ class TestLogger(unittest.TestCase):
     def test_info(self):
         """info message"""
         logger = log.Logger()
-        with self.assertLogs(logger._logger, level=_LEVEL) as context:
+        with self.assertLogs(logger._Logger__logger, level=_LEVEL) as context:
             logger.info('インフォ')
             level, _, message = context.output[0].split(':', 2)
         self.assertEqual(level, 'INFO')
@@ -84,18 +83,18 @@ class TestLogger(unittest.TestCase):
     def test_info_with_trace(self):
         """info message with call trace"""
         logger = log.Logger(trace=True)
-        with self.assertLogs(logger._logger, level=_LEVEL) as context:
+        with self.assertLogs(logger._Logger__logger, level=_LEVEL) as context:
             logger.info('%s %s', 'イン', 'フォ')
             level, _, message = context.output[0].split(':', 2)
         self.assertEqual(level, 'INFO')
         self.assertRegex(message, 'イン フォ ((.*):[0-9]*:(.*))$')
         print(message)
 
-    @unittest.skipIf(_LEVEL > logging.DEBUG, 'not supported logging level')
+    @unittest.skipIf(_LEVEL > logging.DEBUG, 'lower logging level')
     def test_debug(self):
         """debug message"""
         logger = log.Logger()
-        with self.assertLogs(logger._logger, level=_LEVEL) as context:
+        with self.assertLogs(logger._Logger__logger, level=_LEVEL) as context:
             logger.debug('{}'.format('デバッグ'))
             level, _, message = context.output[0].split(':', 2)
         self.assertEqual(level, 'DEBUG')

@@ -94,11 +94,6 @@ class Logger():
         message = 'end (SystemExit)' if system_exit else 'end'
         func(message)
 
-    @property
-    def _logger(self):
-        # ロガーの実体へのアクセサ（ユニットテスト用）
-        return self.__logger
-
     def __fmt(self, fmt):
         if self.trace:
             caller = self.__caller(depth=3)
